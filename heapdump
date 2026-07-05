@@ -1,3 +1,0 @@
-jcmd <PID> GC.heap_dump /tmp/heapdump_$(date +%Y%m%d_%H%M%S).hprof
-
-
