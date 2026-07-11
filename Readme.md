@@ -4,17 +4,44 @@ Collection of useful scripts for Performance Engineering, SRE, Production Suppor
 
 ## Available Scripts
 
-### Thread Dumps
+# Thread Dump Collector
 
-#### multi_pid_threaddump.sh
+## multi_pid_threaddump.sh
 
-This script takes multiple thread dumps for one or more Java processes using `jstack`.
+Collects multiple thread dumps for one or more Java processes.
 
-**Usage:**
+The script:
+
+* Collects thread dumps using **jcmd** (or **jstack** if `jcmd` is unavailable).
+* Captures per-thread CPU usage using `top -H`.
+* Collects process details (CPU, memory and thread count).
+* Generates a timestamped output directory with all dumps and a summary report.
+* Validates inputs and skips invalid or unavailable PIDs.
+
+## Usage
 
 ```bash
-./multi_pid_threaddump.sh "1234 5678" 5 1
+./multi_pid_threaddump.sh "PID1 PID2" <dump_count> <interval_seconds>
 ```
+
+### Example
+
+```bash
+./multi_pid_threaddump.sh "1234 5678" 5 10
+```
+
+This collects **5 thread dumps** for each PID with a **10-second interval** between dump cycles.
+
+## Output
+
+The script creates a timestamped folder containing:
+
+* Thread dump files
+* Thread CPU snapshots (`top -H`)
+* Process details
+* `summary.txt`
+* `errors.log` (if any failures occur)
+
 
 ---
 
