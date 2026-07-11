@@ -4,44 +4,69 @@ Collection of useful scripts for Performance Engineering, SRE, Production Suppor
 
 ## Available Scripts
 
-# Thread Dump Collector
+## Thread Dump Collector
 
 ## multi_pid_threaddump.sh
 
-Collects multiple thread dumps for one or more Java processes.
+Collects repeated thread dumps for one or more Java processes.
 
-The script:
+The script also captures:
 
-* Collects thread dumps using **jcmd** (or **jstack** if `jcmd` is unavailable).
-* Captures per-thread CPU usage using `top -H`.
-* Collects process details (CPU, memory and thread count).
-* Generates a timestamped output directory with all dumps and a summary report.
-* Validates inputs and skips invalid or unavailable PIDs.
+* Per-thread CPU usage using `top -H`
+* Process CPU, memory and thread details
+* A summary file for each collection
+
+It uses `jcmd` when available and falls back to `jstack`.
 
 ## Usage
 
 ```bash
-./multi_pid_threaddump.sh "PID1 PID2" <dump_count> <interval_seconds>
+./multi_pid_threaddump.sh -p "PID1 PID2" -c <count> -i <interval>
 ```
 
 ### Example
 
 ```bash
-./multi_pid_threaddump.sh "1234 5678" 5 10
+./multi_pid_threaddump.sh -p "1234 5678" -c 5 -i 10
 ```
 
-This collects **5 thread dumps** for each PID with a **10-second interval** between dump cycles.
+This collects 5 dumps for both PIDs with a 10-second interval.
+
+## Automatically Detect Java PIDs
+
+```bash
+./multi_pid_threaddump.sh -a -c 5 -i 10
+```
+
+## Compress Output
+
+```bash
+./multi_pid_threaddump.sh -p "1234" -c 5 -i 10 -z
+```
 
 ## Output
 
-The script creates a timestamped folder containing:
+The script creates a timestamped directory containing:
 
-* Thread dump files
-* Thread CPU snapshots (`top -H`)
+* Thread dumps
+* CPU snapshots
 * Process details
 * `summary.txt`
-* `errors.log` (if any failures occur)
 
+## Requirements
+
+```text
+bash
+ps
+top
+jcmd or jstack
+```
+
+Make the script executable before running:
+
+```bash
+chmod +x multi_pid_threaddump.sh
+```
 
 ---
 
